@@ -26,22 +26,26 @@ A demo version of this service is hosted on AWS - [`https://z6pv80ao4l.execute-a
 
 And here is the ES7 source behind it
 
-``` javascript
+```javascript
 export const hello = async (event, context) => {
   return {
     statusCode: 200,
     body: JSON.stringify({
-      message: `Go Serverless v1.0! ${(await message({ time: 1, copy: 'Your function executed successfully!'}))}`,
-      input: event,
-    }),
+      message: `Go Serverless v1.0! ${await message({
+        time: 1,
+        copy: "Your function executed successfully!"
+      })}`,
+      input: event
+    })
   };
 };
 
-const message = ({ time, ...rest }) => new Promise((resolve, reject) =>
-  setTimeout(() => {
-    resolve(`${rest.copy} (with a delay)`);
-  }, time * 1000)
-);
+const message = ({ time, ...rest }) =>
+  new Promise((resolve, reject) =>
+    setTimeout(() => {
+      resolve(`${rest.copy} (with a delay)`);
+    }, time * 1000)
+  );
 ```
 
 ### Upgrading from v1.x
@@ -57,19 +61,19 @@ We have detailed instructions on how to upgrade your app to the v2.0 of the star
 
 To create a new Serverless project.
 
-``` bash
+```bash
 $ serverless install --url https://github.com/AnomalyInnovations/serverless-nodejs-starter --name my-project
 ```
 
 Enter the new directory
 
-``` bash
+```bash
 $ cd my-project
 ```
 
 Install the Node.js packages
 
-``` bash
+```bash
 $ npm install
 ```
 
@@ -77,25 +81,25 @@ $ npm install
 
 To run a function on your local
 
-``` bash
+```bash
 $ serverless invoke local --function hello
 ```
 
 To simulate API Gateway locally using [serverless-offline](https://github.com/dherault/serverless-offline)
 
-``` bash
+```bash
 $ serverless offline start
 ```
 
 Deploy your project
 
-``` bash
+```bash
 $ serverless deploy
 ```
 
 Deploy a single function
 
-``` bash
+```bash
 $ serverless deploy function --function hello
 ```
 
@@ -103,7 +107,7 @@ $ serverless deploy function --function hello
 
 Run your tests using
 
-``` bash
+```bash
 $ npm test
 ```
 
@@ -124,7 +128,7 @@ We use [ESLint](https://eslint.org) to lint your code via the [serverless-bundle
 
 You can turn this off by adding the following to your `serverless.yml`.
 
-``` yaml
+```yaml
 custom:
   bundle:
     linting: false
@@ -140,3 +144,25 @@ To [override the default config](https://eslint.org/docs/user-guide/configuring)
 ---
 
 This repo is maintained by [Anomaly Innovations](https://anoma.ly); makers of [Seed](https://seed.run) and [Serverless Stack](https://serverless-stack.com).
+
+# Deploy Your Serverless Infrastructure
+
+Run bash command:
+
+```bash
+$ SLS_DEBUG=\* serverless deploy -v
+```
+
+This deploy to a stage called dev. This has been set in our serverless.yml under the provider: block. We can override this by explicitly passing it in by running the command:
+
+```bash
+$ SLS_DEBUG=* serverless deploy --stage $STAGE_NAME
+```
+
+command instead.
+
+    Our deploy command (with the -v option) prints out the output we had requested in our resources. For example, AttachmentsBucketName is the S3 file uploads bucket that was created and the UserPoolId is the Id of our User Pool.
+
+    Finally, you can run the deploy command and CloudFormation will only update the parts that have changed. So you can confidently run this command without worrying about it re-creating your entire infrastructure from scratch.
+
+And that’s it! Our entire infrastructure is completely configured and deployed automatically.
