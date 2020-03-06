@@ -7,6 +7,13 @@ export async function main(event, context) {
   const amount = calculateCost(storage);
   const description = "Scratch charge";
 
+  console.log(
+    `===================\n${process.env.stripeSecretKey.slice(
+      0,
+      12
+    )}\n===================`
+  );
+
   const stripe = stripePackage(process.env.stripeSecretKey);
 
   try {
